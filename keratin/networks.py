@@ -5,7 +5,29 @@ import keras.layers.convolutional as klc
 from keras.layers.merge import Concatenate
 
 
-def unet(img_rows, img_cols, n_channels=1):
+def segnet(img_rows, img_cols, n_channels=1):
+    """
+    This is a segnet (u-shaped) architecture, such as that described in
+    [1]_
+
+    Parameters
+    ----------
+    img_rows, img_cols : int
+        Number of rows and columns in each image to be fed in as inputs.
+    n_channels : int, optional
+        The number of channels in the image.
+        Default: 1.
+
+    Returns
+    -------
+    model : a uncompiled :class:`km.Model` class instance.
+
+    References
+    ----------
+    .. [1] Vijay Badrinarayanan, Alex Kendall and Roberto Cipolla "SegNet: A
+    Deep Convolutional Encoder-Decoder Architecture for Image Segmentation."
+    `arXiv:1511.00561, 2015. <https://arxiv.org/abs/1511.00561>`_.
+    """
     inputs = Input((img_rows, img_cols, n_channels))
     conv1 = klc.Conv2D(32, (3, 3), activation='relu',
                        padding='same')(inputs)
