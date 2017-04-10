@@ -32,7 +32,7 @@ script:
 
 - mkdir for_test
 - cd for_test
-- py.test --pyargs keratin --cov-report term-missing --cov=keratin
+- py.test --pyargs keratin --cov-report term-missing --cov=keratin --doctest-modules
 
 after_success:
 - coveralls
