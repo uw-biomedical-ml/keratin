@@ -1,11 +1,12 @@
 import keras.models as km
 from keras.layers import (Convolution2D, MaxPooling2D, Convolution3D,
                           MaxPooling3D, Flatten, Dense, Input, merge,
-                          UpSampling2D, Dropout)
+                          UpSampling2D, UpSampling3D, Dropout)
 from keras.layers.merge import Concatenate
 
 
-def unet(img_x, img_y, n_channels=1):
+def unet(img_x, img_y, img_z=None, n_channels=1,
+         pool_dim=2, upsamp_dim=2, kernel_dim=3, stride=2):
     """
     This is a unet architecture, described in [1]_.
 
@@ -28,68 +29,64 @@ def unet(img_x, img_y, n_channels=1):
        Wells W., Frangi A. (eds) Medical Image Computing and Computer-Assisted
        Intervention – MICCAI 2015. Lecture Notes in Computer Science, vol 9351.
     """
-    inputs = Input(shape=(img_x, img_y, n_channels))
-    conv1 = Convolution2D(32, (3, 3), activation='relu',
-                          padding='same')(inputs)
-    conv1 = Convolution2D(32, (3, 3), activation='relu',
-                          padding='same')(conv1)
-    pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
+    if img_z is None:
+        inputs = Input(shape=(img_x, img_y, n_channels))
+        kernel_dims = (kernel_dim, kernel_dim)
+        final_kernel_dims = (1, 1)
+        pool_dims = (pool_dim, pool_dim)
+        upsamp_size = (upsamp_dim, upsamp_dim)
+        strides = (stride, stride)
+        conv = Convolution2D
+        max_pool = MaxPooling2D
+        upsamp = UpSampling2D
+    else:
+        inputs = Input(shape=(img_x, img_y, img_z, n_channels))
+        kernel_dims = (kernel_dim, kernel_dim, kernel_dim)
+        final_kernel_dims = (1, 1, 1)
+        pool_dims = (pool_dim, pool_dim, pool_dim)
+        upsamp_size = (upsamp_dim, upsamp_dim, upsamp_dim)
+        strides = (stride, stride, stride)
+        conv = Convolution3D
+        max_pool = MaxPooling3D
+        upsamp = UpSampling3D
 
-    conv2 = Convolution2D(64, (3, 3), activation='relu',
-                          padding='same')(pool1)
-    conv2 = Convolution2D(64, (3, 3), activation='relu',
-                          padding='same')(conv2)
-    pool2 = MaxPooling2D(pool_size=(2, 2))(conv2)
+    cnv1_1 = conv(32, kernel_dims, activation='relu', padding='same')(inputs)
+    cnv1_2 = conv(32, kernel_dims, activation='relu', padding='same')(cnv1_1)
+    pool1 = max_pool(pool_size=pool_dims)(cnv1_2)
+    cnv2_1 = conv(64, kernel_dims, activation='relu', padding='same')(pool1)
+    cnv2_2 = conv(64, kernel_dims, activation='relu', padding='same')(cnv2_1)
+    pool2 = max_pool(pool_size=pool_dims)(cnv2_2)
 
-    conv3 = Convolution2D(128, (3, 3), activation='relu',
-                          padding='same')(pool2)
-    conv3 = Convolution2D(128, (3, 3), activation='relu',
-                          padding='same')(conv3)
-    pool3 = MaxPooling2D(pool_size=(2, 2))(conv3)
+    cnv3_1 = conv(128, kernel_dims, activation='relu', padding='same')(pool2)
+    cnv3_2 = conv(128, kernel_dims, activation='relu', padding='same')(cnv3_1)
+    pool3 = max_pool(pool_size=pool_dims)(cnv3_2)
+    conv4 = conv(256, kernel_dims, activation='relu', padding='same')(pool3)
+    conv4 = conv(256, kernel_dims, activation='relu', padding='same')(conv4)
+    pool4 = max_pool(pool_size=pool_dims)(conv4)
 
-    conv4 = Convolution2D(256, (3, 3), activation='relu',
-                          padding='same')(pool3)
-    conv4 = Convolution2D(256, (3, 3), activation='relu',
-                          padding='same')(conv4)
-    pool4 = MaxPooling2D(pool_size=(2, 2))(conv4)
+    conv5 = conv(512, kernel_dims, activation='relu', padding='same')(pool4)
+    conv5 = conv(512, kernel_dims, activation='relu', padding='same')(conv5)
 
-    conv5 = Convolution2D(512, (3, 3), activation='relu',
-                          padding='same')(pool4)
-    conv5 = Convolution2D(512, (3, 3), activation='relu',
-                          padding='same')(conv5)
+    up6 = Concatenate()([upsamp(size=upsamp_size)(conv5), conv4])
 
-    up6 = Concatenate()(
-            [UpSampling2D(size=(2, 2))(conv5), conv4])
+    conv6 = conv(256, kernel_dims, activation='relu', padding='same')(up6)
+    conv6 = conv(256, kernel_dims, activation='relu', padding='same')(conv6)
 
-    conv6 = Convolution2D(256, (3, 3), activation='relu',
-                          padding='same')(up6)
-    conv6 = Convolution2D(256, (3, 3), activation='relu',
-                          padding='same')(conv6)
+    up7 = Concatenate()([upsamp(size=upsamp_size)(conv6), conv3])
 
-    up7 = Concatenate()(
-            [UpSampling2D(size=(2, 2))(conv6), conv3])
+    conv7 = conv(128, kernel_dims, activation='relu', padding='same')(up7)
+    conv7 = conv(128, kernel_dims, activation='relu', padding='same')(conv7)
 
-    conv7 = Convolution2D(128, (3, 3), activation='relu',
-                          padding='same')(up7)
-    conv7 = Convolution2D(128, (3, 3), activation='relu',
-                          padding='same')(conv7)
+    up8 = Concatenate()([upsamp(size=upsamp_size)(conv7), conv2])
 
-    up8 = Concatenate()(
-            [UpSampling2D(size=(2, 2))(conv7), conv2])
+    conv8 = conv(64, kernel_dims, activation='relu', padding='same')(up8)
+    conv8 = conv(64, kernel_dims, activation='relu', padding='same')(conv8)
 
-    conv8 = Convolution2D(64, (3, 3), activation='relu',
-                          padding='same')(up8)
-    conv8 = Convolution2D(64, (3, 3), activation='relu',
-                          padding='same')(conv8)
+    up9 = Concatenate()([upsamp(size=upsamp_size)(conv8), conv1])
+    conv9 = conv(32, kernel_dims, activation='relu', padding='same')(up9)
+    conv9 = conv(32, kernel_dims, activation='relu', padding='same')(conv9)
 
-    up9 = Concatenate()(
-            [UpSampling2D(size=(2, 2))(conv8), conv1])
-    conv9 = Convolution2D(32, (3, 3), activation='relu',
-                          padding='same')(up9)
-    conv9 = Convolution2D(32, (3, 3), activation='relu',
-                          padding='same')(conv9)
-
-    conv10 = Convolution2D(1, (1, 1), activation='sigmoid')(conv9)
+    conv10 = conv(1, final_kernel_dims, activation='sigmoid')(conv9)
     return km.Model(input=inputs, outputs=conv10)
 
 
