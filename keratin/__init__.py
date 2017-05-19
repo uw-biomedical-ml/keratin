@@ -1,4 +1,4 @@
 from __future__ import absolute_import, division, print_function
 from .version import __version__  # noqa
 from .keratin import *  # noqa
-import keratin.networks
+from keratin import networks  # noqa

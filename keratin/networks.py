@@ -1,7 +1,7 @@
 import keras.models as km
 from keras.layers import (Convolution2D, MaxPooling2D, Convolution3D,
-                          MaxPooling3D, Flatten, Dense, Input, merge,
-                          UpSampling2D, UpSampling3D, Dropout)
+                          MaxPooling3D, Flatten, Dense, Input, UpSampling2D,
+                          UpSampling3D)
 from keras.layers.merge import Concatenate
 
 
@@ -60,34 +60,34 @@ def unet(img_x, img_y, img_z=None, n_channels=1,
     cnv3_1 = conv(128, kernel_dims, activation='relu', padding='same')(pool2)
     cnv3_2 = conv(128, kernel_dims, activation='relu', padding='same')(cnv3_1)
     pool3 = max_pool(pool_size=pool_dims)(cnv3_2)
-    conv4 = conv(256, kernel_dims, activation='relu', padding='same')(pool3)
-    conv4 = conv(256, kernel_dims, activation='relu', padding='same')(conv4)
-    pool4 = max_pool(pool_size=pool_dims)(conv4)
+    cnv4_1 = conv(256, kernel_dims, activation='relu', padding='same')(pool3)
+    cnv4_2 = conv(256, kernel_dims, activation='relu', padding='same')(cnv4_1)
+    pool4 = max_pool(pool_size=pool_dims)(cnv4_2)
 
-    conv5 = conv(512, kernel_dims, activation='relu', padding='same')(pool4)
-    conv5 = conv(512, kernel_dims, activation='relu', padding='same')(conv5)
+    cnv5_1 = conv(512, kernel_dims, activation='relu', padding='same')(pool4)
+    cnv5_2 = conv(512, kernel_dims, activation='relu', padding='same')(cnv5_1)
 
-    up6 = Concatenate()([upsamp(size=upsamp_size)(conv5), conv4])
+    up6 = Concatenate()([upsamp(size=upsamp_size)(cnv5_2), cnv4_2])
 
-    conv6 = conv(256, kernel_dims, activation='relu', padding='same')(up6)
-    conv6 = conv(256, kernel_dims, activation='relu', padding='same')(conv6)
+    cnv6_1 = conv(256, kernel_dims, activation='relu', padding='same')(up6)
+    cnv6_2 = conv(256, kernel_dims, activation='relu', padding='same')(cnv6_1)
 
-    up7 = Concatenate()([upsamp(size=upsamp_size)(conv6), conv3])
+    up7 = Concatenate()([upsamp(size=upsamp_size)(cnv6_2), cnv3_2])
 
-    conv7 = conv(128, kernel_dims, activation='relu', padding='same')(up7)
-    conv7 = conv(128, kernel_dims, activation='relu', padding='same')(conv7)
+    cnv7_1 = conv(128, kernel_dims, activation='relu', padding='same')(up7)
+    cnv7_2 = conv(128, kernel_dims, activation='relu', padding='same')(cnv7_1)
 
-    up8 = Concatenate()([upsamp(size=upsamp_size)(conv7), conv2])
+    up8 = Concatenate()([upsamp(size=upsamp_size)(cnv7_2), cnv2_2])
 
-    conv8 = conv(64, kernel_dims, activation='relu', padding='same')(up8)
-    conv8 = conv(64, kernel_dims, activation='relu', padding='same')(conv8)
+    cnv8_1 = conv(64, kernel_dims, activation='relu', padding='same')(up8)
+    cnv8_2 = conv(64, kernel_dims, activation='relu', padding='same')(cnv8_1)
 
-    up9 = Concatenate()([upsamp(size=upsamp_size)(conv8), conv1])
-    conv9 = conv(32, kernel_dims, activation='relu', padding='same')(up9)
-    conv9 = conv(32, kernel_dims, activation='relu', padding='same')(conv9)
+    up9 = Concatenate()([upsamp(size=upsamp_size)(cnv8_2), cnv1_2])
+    cnv9_1 = conv(32, kernel_dims, activation='relu', padding='same')(up9)
+    cnv9_2 = conv(32, kernel_dims, activation='relu', padding='same')(cnv9_1)
 
-    conv10 = conv(1, final_kernel_dims, activation='sigmoid')(conv9)
-    return km.Model(input=inputs, outputs=conv10)
+    outputs = conv(1, final_kernel_dims, activation='sigmoid')(cnv9_2)
+    return km.Model(input=inputs, outputs=outputs)
 
 
 def vgg16(img_x, img_y, n_classes, img_z=None, n_channels=1,
@@ -182,5 +182,5 @@ def vgg16(img_x, img_y, n_classes, img_z=None, n_channels=1,
     flatten = Flatten(name='flatten')(maxpool5)
     fc1 = Dense(4096, activation='relu', name='fc1')(flatten)
     fc2 = Dense(4096, activation='relu', name='fc2')(fc1)
-    out = Dense(n_classes, activation='softmax', name='predictions')(fc2)
-    return km.Model(input=inputs, outputs=out)
+    outputs = Dense(n_classes, activation='softmax', name='predictions')(fc2)
+    return km.Model(input=inputs, outputs=outputs)
