@@ -9,10 +9,10 @@ with open(ver_file) as f:
 
 REQUIRES = []
 with open('requirements.txt') as f:
-    l = f.readline()[:-1]
-    while l:
-        REQUIRES.append(l)
-        l = f.readline()[:-1]
+    line = f.readline()[:-1]
+    while line:
+        REQUIRES.append(line)
+        line = f.readline()[:-1]
 
 
 opts = dict(name=NAME,
