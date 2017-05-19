@@ -7,14 +7,14 @@ from .due import due, Doi
 # Use duecredit (duecredit.org) to provide a citation to relevant work to
 # be cited. This does nothing, unless the user has duecredit installed,
 # And calls this with duecredit (as in `python -m duecredit script.py`):
-due.cite(Doi("10.1167/13.9.30"),
-         description="Template project for small scientific Python projects",
-         tags=["reference-implementation"],
-         path='shablona')
+# due.cite(Doi("XXX"),
+#         description="",
+#         tags=["", ""],
+#         path='XXX')
 
 
 class LossHistory(keras.callbacks.Callback):
-    def __init__(self, log_path, loss_name, valid_name ):
+    def __init__(self, log_path, loss_name, valid_name):
         keras.callbacks.Callback.__init__(self)
         self.log_path = log_path
         self.loss_name = loss_name

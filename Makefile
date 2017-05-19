@@ -7,3 +7,6 @@ flake:
 		exit 1; \
 	fi;
 	@echo "flake8 passed"
+
+test:
+	py.test --pyargs keratin --cov-report term-missing --cov=keratin --doctest-modules
