@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import keras
 
-from .due import due, Doi
+from .due import due, Doi  # noqa
 
 # Use duecredit (duecredit.org) to provide a citation to relevant work to
 # be cited. This does nothing, unless the user has duecredit installed,
