@@ -36,7 +36,6 @@ def unet(img_x, img_y, img_z=None, n_channels=1,
         final_kernel_dims = (1, 1)
         pool_dims = (pool_dim, pool_dim)
         upsamp_size = (upsamp_dim, upsamp_dim)
-        strides = (stride, stride)
         conv = Convolution2D
         max_pool = MaxPooling2D
         upsamp = UpSampling2D
@@ -46,7 +45,6 @@ def unet(img_x, img_y, img_z=None, n_channels=1,
         final_kernel_dims = (1, 1, 1)
         pool_dims = (pool_dim, pool_dim, pool_dim)
         upsamp_size = (upsamp_dim, upsamp_dim, upsamp_dim)
-        strides = (stride, stride, stride)
         conv = Convolution3D
         max_pool = MaxPooling3D
         upsamp = UpSampling3D

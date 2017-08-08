@@ -3,6 +3,7 @@ import keratin.networks as kn
 from keras.optimizers import Adam
 from keratin.metrics import dice, dice_loss
 
+
 def test_unet_2d():
     img_rows = 48
     img_cols = 48
@@ -13,6 +14,7 @@ def test_unet_2d():
     img = np.random.randn(2, img_rows, img_cols, 1)
     seg = img > 0
     model.fit(img, seg)
+
 
 def test_unet_3d():
     img_rows = 48
@@ -37,6 +39,7 @@ def test_vgg16_2d():
     img = np.random.randn(2, img_rows, img_cols, 1)
     classes = np.array([[0, 1], [1, 0]])
     model.fit(img, classes)
+
 
 def test_vgg16_3d():
     img_rows = 48
