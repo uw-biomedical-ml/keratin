@@ -3,9 +3,17 @@ from setuptools import setup, find_packages
 PACKAGES = find_packages()
 
 # Get version and release info, which is all stored in shablona/version.py
-ver_file = os.path.join('shablona', 'version.py')
+ver_file = os.path.join('keratin', 'version.py')
 with open(ver_file) as f:
     exec(f.read())
+
+REQUIRES = []
+with open('requirements.txt') as f:
+    line = f.readline()[:-1]
+    while line:
+        REQUIRES.append(line)
+        line = f.readline()[:-1]
+
 
 opts = dict(name=NAME,
             maintainer=MAINTAINER,
