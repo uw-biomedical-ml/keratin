@@ -2,6 +2,11 @@ language: python
 sudo: false
 
 env:
+      global:
+        - secure: "RCb5YIbA2hzraOuElWFi46rPIRKTpx53uYtDAAJMSnFfQoLo8kTkWq09wnDZ80RsIxzbao3A7rnupbfofcludruBSZhSMIsEku/lPgVY58FGpPKzX3036c6nG5mqGvuRLppfnMJTGocZzf49MBlCswGOZnosyLTIm/vbL41vKAvVCk4Udtqpn/m5OlDb72ORfz1g5twvvQULF+6TYrc2PYgkWyHFI2+VOROES45C88plllfaeLks+RTyQWxpmkD4V7KX26pi0NKxKjKxxcw/Sfqq1+ZpSy6SsTrVyKvnjXZLbuGoGTsoNmQNIq+ln7a9pfg3Fjr7cvZejpCwTuBDtPxmyWTsTR/F+SpIfcLx2hib8NYBRhBGXhhFYu7xjQNnSB30X41iNKjQDYx0oL3Hzo2zubjfbzPnOVwLJXSk6yZMhNpFrggPLJsQVGXH82204adSLbdHa5Ik0DUrxabOajiJ5FarfuJmynqSW4FMvBCZCfKNPajPKo2lpV8FhhtJtxoWE70SDZp5JrRE16ULWVEEcS6STCK+jG34bbQcAHrw/ikFRASQkhyaO86L82EuVhIUOAanrSVPx/zKU8IVqEvajdRSFGyu22XKsbvSr/zRawer0GQtJjg4Q8ZVBkO/h5bIakpHuep5Kgw20Y3B7Gbiju+CcWHscA0lHkKNg3U="
+
+
+env:
   global:
     - PIP_DEPS="flake8 pytest coveralls pytest-cov"
 
