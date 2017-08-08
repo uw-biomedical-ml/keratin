@@ -3,7 +3,7 @@ sudo: false
 
 env:
   global:
-    - PIP_DEPS="flake8 pytest numpy scipy coveralls pytest-cov tensorflow keras"
+    - PIP_DEPS="flake8 pytest coveralls pytest-cov"
 
 python:
 - '2.7'
