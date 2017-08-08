@@ -24,10 +24,11 @@ def unet(img_x, img_y, img_z=None, n_channels=1,
 
     References
     ----------
-    .. [1] Olaf Ronneberger, Philipp Fischer, Thomas Brox "U-Net: Convolutional
-       Networks for Biomedical Image Segmentation". In: Navab N., Hornegger J.,
-       Wells W., Frangi A. (eds) Medical Image Computing and Computer-Assisted
-       Intervention – MICCAI 2015. Lecture Notes in Computer Science, vol 9351.
+    .. [1] O. Ronneberger, P. Fischer, T. Brox (2015). U-Net: Convolutional
+           Networks for Biomedical Image Segmentation. In N. Navab, J.
+           Hornegger, W. Wells, A. Frangi (eds.). Medical Image Computing and
+           Computer-Assisted Intervent -- MICCAI 2015. Lecture Notes in
+           Computer Science, vol 9351.
     """
     if img_z is None:
         inputs = Input(shape=(img_x, img_y, n_channels))
